@@ -16,3 +16,5 @@ logs/*
 .venv
 uv.lock
 rlinf/envs/maniskill/assets
+/model
+rlinf_agentic.tar
