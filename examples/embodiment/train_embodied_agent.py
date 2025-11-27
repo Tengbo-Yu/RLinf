@@ -35,7 +35,7 @@ mp.set_start_method("spawn", force=True)
 def main(cfg) -> None:
     cfg = validate_cfg(cfg)
     print(json.dumps(OmegaConf.to_container(cfg, resolve=True), indent=2))
-
+    # Create cluster and component placement strategy
     cluster = Cluster(num_nodes=cfg.cluster.num_nodes)
     component_placement = HybridComponentPlacement(cfg, cluster)
 

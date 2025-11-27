@@ -92,6 +92,7 @@ class MultiStepRolloutWorker(Worker):
             "max_new_tokens": self._length_params["max_new_token"],
         }
 
+    # Predict action given env_obs
     def predict(self, env_obs, do_sample=True, mode="train"):
         kwargs = (
             self._train_sampling_params
@@ -111,6 +112,7 @@ class MultiStepRolloutWorker(Worker):
 
         return actions, result
 
+    # Update rollout buffer with env_output
     def update_env_output(self, i, env_output):
         # first step for env_batch
         if env_output["rewards"] is None:
@@ -145,7 +147,7 @@ class MultiStepRolloutWorker(Worker):
         if self.cfg.rollout.get("enable_offload", False):
             self.reload_model()
         self.buffer_list = [EmbodiedRolloutResult() for _ in range(self.stage_num)]
-
+ 
         for _ in tqdm(
             range(self.cfg.algorithm.rollout_epoch),
             desc="Generating Rollout Epochs",
@@ -205,6 +207,7 @@ class MultiStepRolloutWorker(Worker):
         gc.collect()
         torch.cuda.empty_cache()
 
+    # recv env_output from env
     def recv_env_output(self):
         env_output = self.channel.get(
             key=f"{self._obs_queue_name}_{self._rank}",
